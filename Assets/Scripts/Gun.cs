@@ -7,6 +7,7 @@ public class Gun : MonoBehaviour
     [SerializeField] private float fireRate;
     [SerializeField] private float fireRange;
     [SerializeField] Bullet bulletPrefab;
+
     private float lastTimeShot;
     public GameObject FindNearestEnemy()
     {
@@ -15,7 +16,7 @@ public class Gun : MonoBehaviour
 
         float distance;
         float minDistance = fireRange;
-        GameObject NearestEnemy = null; // faccio un controllo per essere sicuro che il calcolo parti da 0
+        GameObject NearestEnemy = null; // faccio un controllo per essere sicuro che il calcolo parta da 0
 
         foreach (GameObject enemy in enemys)
         {
@@ -37,11 +38,12 @@ public class Gun : MonoBehaviour
             Bullet bullet = Instantiate(bulletPrefab);
             bullet.transform.position = gameObject.transform.position;
             bullet.Set(direction); //dò il valore della direzione alla funzione
-        }
+        }   
     }
     private void Update()
     {
-        if(Time.time -  lastTimeShot > fireRate)
+        Pickup pickup = GetComponent<Pickup>();
+        if (Time.time - lastTimeShot > fireRate && pickup.isEquipped == true)
         {
             lastTimeShot = Time.time;
             Shoot();

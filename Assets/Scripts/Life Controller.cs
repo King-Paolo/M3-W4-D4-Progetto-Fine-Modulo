@@ -11,7 +11,7 @@ public class LifeController : MonoBehaviour
         if (hp == 0)
         {
             Debug.Log(" Sei stato sconfitto!");
-            Destroy(gameObject);
+            Destroy(gameObject); // aggiungere timer animazione morte
         }
         Debug.Log("Hp rimanenti" + hp);
     }
