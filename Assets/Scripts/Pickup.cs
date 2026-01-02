@@ -5,20 +5,24 @@ using UnityEngine;
 public class Pickup : MonoBehaviour
 {
     [SerializeField] Gun gunPrefab;
-    public bool isEquipped;
-    public bool IsEquipped { get { return isEquipped; } }
+    [SerializeField] private Spawn _zombieSpawn;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isEquipped == true) return;
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if(gameObject.CompareTag("Gun"))
+            {
+                _zombieSpawn.StartWave();
+            }
+            Gun gun = Instantiate(gunPrefab, collision.gameObject.transform);
+            gun.transform.position = collision.transform.position;
+            gun.Equip();
+            Destroy(gameObject);
+        }
         else
         {
-            if (collision.gameObject.CompareTag("Player"))
-            {
-                isEquipped = true;
-                Gun gun = Instantiate(gunPrefab, collision.gameObject.transform);
-                gun.transform.position = collision.transform.position;
-                Destroy(gameObject);
-            }
+            return;
         }
     }
 }

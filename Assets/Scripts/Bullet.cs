@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] float damage;
     private Vector2 direction;
     private Rigidbody2D rb;
-    
+
     public void Set(Vector2 direction)
     {
         this.direction = direction;
@@ -28,12 +28,14 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        LifeController enemy = gameObject.AddComponent<LifeController>();
-        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.GetComponent<TilemapCollider2D>())
-            Destroy(gameObject);
-        if (enemy.CompareTag("Enemy"))
+        LifeController enemy = collision.gameObject.GetComponent<LifeController>();
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             enemy.TakeDamage(damage);
+        }
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.GetComponent<TilemapCollider2D>())
+        {
+            Destroy(gameObject);
         }
     }
 }

@@ -1,14 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Gun : MonoBehaviour
 {
     [SerializeField] private float fireRate;
     [SerializeField] private float fireRange;
     [SerializeField] Bullet bulletPrefab;
-
     private float lastTimeShot;
+    private bool isEquipped;
+    private AnimationParamHandler _animParam;
+
+    private void Awake()
+    {
+        _animParam = GetComponent<AnimationParamHandler>();
+    }
+
     public GameObject FindNearestEnemy()
     {
         GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy"); // creo un array per cercare tutti i gameObject col tag "enemy" nella scena
@@ -24,6 +32,7 @@ public class Gun : MonoBehaviour
             if (distance < minDistance)
             {
                 NearestEnemy = enemy;
+                minDistance = distance;
             }
         }
         return NearestEnemy;
@@ -38,15 +47,24 @@ public class Gun : MonoBehaviour
             Bullet bullet = Instantiate(bulletPrefab);
             bullet.transform.position = gameObject.transform.position;
             bullet.Set(direction); //dò il valore della direzione alla funzione
-        }   
+        }
+    }
+    public void Equip()
+    {
+        isEquipped = true;
     }
     private void Update()
     {
-        Pickup pickup = GetComponent<Pickup>();
-        if (Time.time - lastTimeShot > fireRate && pickup.isEquipped == true)
+        if (Time.time - lastTimeShot > fireRate && isEquipped)
         {
+            GameObject enemy = FindNearestEnemy();
             lastTimeShot = Time.time;
             Shoot();
+            if(enemy != null) 
+            {
+                Vector2 direction = enemy.transform.position - transform.position;
+                _animParam.SetHorizontalSpeedParam(direction.x);
+            }
         }
     }
 }
